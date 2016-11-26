@@ -1,0 +1,1 @@
+[{"meta":{"account":"municio","event":"presence"},"payload":{"id":911270996919452058,"connection_id":911270996911063452,"id_str":"911270996919452058","connection_id_str":"911270996911063452","asset":"356156060353505","time":"2016-11-19T15:05:36Z","type":"connect","reason":"idle_out"}}]

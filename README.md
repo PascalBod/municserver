@@ -1,6 +1,6 @@
 # municserver
 
-This repository contains a server that can be used for Mobile Device's CloudConnect webhook, for a Munic device.
+This repository contains a server that can be used as a target for Mobile Device's CloudConnect webhook, for Munic device.
 
 It shows how to decode JSON documents sent by CloudConnect platform.
 
@@ -20,10 +20,6 @@ The [JSON processing API jar and JSON processing RI jars](https://jsonp.java.net
 * _Munic.Box.V4.2G.SpecialOfferFF_
 * _MunicOS - Box 2 v4.1_
 
-## Application architecture
-
-Check the [wiki](https://github.com/PascalBod/municserver/wiki).
-
-## Reference documentation
+## More information
 
 Check the [wiki](https://github.com/PascalBod/municserver/wiki).
