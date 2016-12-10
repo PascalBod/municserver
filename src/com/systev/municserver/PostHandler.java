@@ -98,6 +98,8 @@ public class PostHandler implements HttpHandler {
         // Process every object of the top-level array.
         boolean objectAvail;
         DecodeJson.PayloadType payloadType;
+        Presence presence;
+        Track track;
         while (true) {
         	objectAvail = decodeJson.getNextArrayObject();
         	if (!objectAvail) {
@@ -107,19 +109,25 @@ public class PostHandler implements HttpHandler {
         	payloadType = decodeJson.getPayloadType();
             switch (payloadType) {
             case PRESENCE:
-            	Presence presence = decodeJson.getPresence();
+            	presence = decodeJson.getPresence();
             	if (presence == null) {
             		logger.severe("**** error **** can't read presence data");
             		break;
             	}
             	// At this stage, presence object is available.
-            	logger.fine("presence data is OK");
+            	logger.fine(presence.display());
             	break;
             case MESSAGE:
             	logger.fine("message data not decoded yet");
             	break;
             case TRACK:
-            	logger.fine("track data not decoded yet");
+            	track = decodeJson.getTrack();
+            	if (track == null) {
+            		logger.severe("**** error **** can't read track data");
+            		break;
+            	}
+            	// At this stage, track object is available.
+            	logger.fine(track.display());
             	break;
             case ERROR:
             	logger.severe("**** error **** can't decode received data");

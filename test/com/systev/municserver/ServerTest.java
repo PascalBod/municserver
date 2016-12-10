@@ -223,5 +223,17 @@ public class ServerTest {
 		sendJsonDocument(jsonDocument);
 
 	}
+	
+	/**
+	 * One track object.
+	 */
+	@Test
+	public void testSendJson04() {
+		
+		String jsonDocument = getJsonDocument("jsonDocument04.txt");
+		assertNotEquals("can't read jsonDocument04", jsonDocument, "");
+		sendJsonDocument(jsonDocument);
+		
+	}
 
 }

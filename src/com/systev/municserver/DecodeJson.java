@@ -19,8 +19,10 @@ package com.systev.municserver;
 
 import java.io.StringReader;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.json.Json;
@@ -30,7 +32,9 @@ import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonString;
+import javax.json.JsonValue;
 import javax.json.stream.JsonParsingException;
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * 
@@ -69,8 +73,6 @@ public class DecodeJson {
 	private JsonObject jsonObject;
 	
 	private Logger logger;
-	
-	private final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	
 	/**
 	 * 
@@ -164,9 +166,12 @@ public class DecodeJson {
 	}
 	
 	/**
+	 * All presence fields are set (no null field).
+	 * Presence.receiptTime is set to current time.
 	 * Presence.id set to BAD_VAL if can't be read.
 	 * Presence.connection_id set to BAD_VAL if can't be read.
 	 * Presence.id_str set to BAD_STRING if can't be read.
+	 * Presence.connection_id_str is set to BAD_STRING if can't be read.
 	 * Presence.time set to January 1, 1970, 00:00:00 if can't be read.
 	 * @return null if presence data can't be read
 	 */
@@ -194,6 +199,8 @@ public class DecodeJson {
 		
     	// At this stage, we have a payload object. Extract data.
     	presence = new Presence();
+    	// Set receipt time.
+    	presence.setReceiptTime(new Date());
     	// id.
     	val = -1;
     	try {
@@ -256,7 +263,7 @@ public class DecodeJson {
     	date = new Date(0);
     	if (!str.contentEquals(BAD_STRING)) {
     		try {
-    			date = dateFormat.parse(str);
+    			date = Payload.DATE_FORMAT.parse(str);
     		} catch (ParseException e) {
     		}
     	}
@@ -283,6 +290,227 @@ public class DecodeJson {
     	presence.setReason(str);
 		
 		return presence;
+	}
+	
+	/**
+	 * 
+	 * All track fields are set (no null field).
+	 * Track.receiptTime is set to current time.
+	 * Track.id set to BAD_VAL if can't be read.
+	 * Track.connection_id set to BAD_VAL if can't be read.
+	 * Track.id_str set to BAD_STRING if can't be read.
+	 * Track.connection_id_str set to BAD_STRING if can't be read.
+	 * Track.lat and track.lon set to 0.0 if can't be read.
+	 * Track.fields does not contain any element if no field can be read.
+	 */
+	public Track getTrack() {
+		
+		Track track;
+		JsonObject payloadObject;
+		JsonArray locArray;
+		JsonNumber jsonNumber;
+		JsonString jsonString;
+		long val;
+		String str;
+		Date date;
+		double lat, lon;
+		JsonNumber coord;
+		JsonObject fieldsObject;
+		Set<Map.Entry<String, JsonValue>> fieldsSet;
+		Map.Entry<String, JsonValue> entry;
+		String hexVal;
+		TrackField trackField;
+
+		try {
+			// Get track object.
+			payloadObject = jsonObject.getJsonObject("payload");
+        	if (payloadObject == null) {
+        		logger.severe("getTrack: no payload object");
+        		return null;
+        	}
+		} catch (ClassCastException e) {
+			logger.severe("getTrack: " + e.getMessage());
+			return null;
+		}
+    	// At this stage, we have a payload object. Extract data.
+    	track = new Track();
+    	// Set receipt time.
+    	track.setReceiptTime(new Date());
+    	// id.
+    	val = -1;
+    	try {
+    		jsonNumber = payloadObject.getJsonNumber("id");
+    		if (jsonNumber != null) {
+    			val = jsonNumber.longValue();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	track.setId(val);
+    	// connection_id.
+    	val = -1;
+    	try {
+    		jsonNumber = payloadObject.getJsonNumber("connection_id");
+    		if (jsonNumber != null) {
+    			val = jsonNumber.longValue();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	track.setConnection_id(val);
+    	// id_str.
+    	str = BAD_STRING;
+    	try {
+    		jsonString = payloadObject.getJsonString("id_str");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	track.setId_str(str);
+    	// connection_id_str
+    	str = BAD_STRING;
+    	try {
+    		jsonString = payloadObject.getJsonString("connection_id_str");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	track.setConnection_id_str(str);
+    	// index
+    	val = -1;
+    	try {
+    		jsonNumber = payloadObject.getJsonNumber("index");
+    		if (jsonNumber != null) {
+    			val = jsonNumber.longValue();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	track.setIndex(val);
+    	// recorded_at
+    	str = BAD_STRING;
+    	try {
+    		jsonString = payloadObject.getJsonString("recorded_at");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	date = new Date(0);
+    	if (!str.contentEquals(BAD_STRING)) {
+    		try {
+    			date = Payload.DATE_FORMAT.parse(str);
+    		} catch (ParseException e) {
+    		}
+    	}
+    	track.setRecordedAt(date);
+    	// recorded_at_ms
+    	str = BAD_STRING;
+    	try {
+    		jsonString = payloadObject.getJsonString("recorded_at_ms");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	date = new Date(0);
+    	if (!str.contentEquals(BAD_STRING)) {
+    		try {
+    			date = Payload.DATE_FORMAT_MS.parse(str);
+    		} catch (ParseException e) {
+    		}
+    	}
+    	track.setRecordedAtMs(date);
+    	// received_at
+    	str = BAD_STRING;
+    	try {
+    		jsonString = payloadObject.getJsonString("received_at");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	date = new Date(0);
+    	if (!str.contentEquals(BAD_STRING)) {
+    		try {
+    			date = Payload.DATE_FORMAT.parse(str);
+    		} catch (ParseException e) {
+    		}
+    	}
+    	track.setReceivedAt(date);
+    	// location
+    	lat = 0.0;
+    	lon = 0.0;
+    	try {
+    		locArray = payloadObject.getJsonArray("loc");
+    		if (locArray != null) {
+    			coord = locArray.getJsonNumber(0);
+    			lon = coord.doubleValue();
+    			coord = locArray.getJsonNumber(1);
+    			lat = coord.doubleValue();
+    		}
+    	} catch (ClassCastException|IndexOutOfBoundsException e) {
+    	}
+    	track.setLat(lat);
+    	track.setLon(lon);
+    	// fields
+    	fieldsObject = null;
+    	fieldsSet = null;
+    	try {
+    		fieldsObject = payloadObject.getJsonObject("fields");
+    	} catch (ClassCastException e) {
+    	}
+    	if (fieldsObject != null) {
+    		fieldsSet = fieldsObject.entrySet();
+    		Iterator<Map.Entry<String, JsonValue>> iterator = fieldsSet.iterator();
+    		String key;
+    		JsonValue value;
+    		while (iterator.hasNext()) {
+    			entry = iterator.next();
+    			key = entry.getKey();
+    			value = entry.getValue();
+    			hexVal = getTrackFieldValue(value);
+    			if (hexVal != null) {
+    				trackField = new TrackField(key,hexVal);
+    				track.addField(trackField);
+    			}
+    		}
+    	}
+
+		return track;
+		
+	}
+	
+	/**
+	 * 
+	 * @param value
+	 * @return null if value can't be decoded otherwise base64-decoded value as an hex string
+	 */
+	private String getTrackFieldValue(JsonValue value) {
+		
+		JsonString jsonString;
+		String str;
+		str = BAD_STRING;
+		try {
+			if (value.getValueType() != JsonValue.ValueType.OBJECT) {
+				return null;
+			}
+			jsonString = ((JsonObject)value).getJsonString("b64_value");
+			if (jsonString != null) {
+				str = jsonString.getString();
+			}
+		} catch (ClassCastException e) {
+		}
+		if (str.contentEquals(BAD_STRING)) {
+			return null;
+		}
+		try {
+			byte[] decodedData = DatatypeConverter.parseBase64Binary(str);
+			return DatatypeConverter.printHexBinary(decodedData);
+		} catch (IllegalArgumentException e) {
+		}
+		
+		return null;
+		
 	}
 	
 	/**

@@ -24,47 +24,18 @@ import java.util.Date;
  * Content of a presence packet.
  *
  */
-public class Presence {
+public class Presence extends Payload {
 	
-	private long id;
-	private String id_str;
-	private long connection_id;
-	private String connection_id_str;
-	private String asset;
+	// Should be put into a properties file.
+	private final static String PRESENCE =      "===== presence data";
+	private final static String TIME =          "  Time:          ";
+	private final static String TYPE =          "  Type:          ";
+	private final static String REASON =        "  Reason:        ";
+	
 	private Date time;
 	private String type;
 	private String reason;
 	
-	public long getId() {
-		return id;
-	}
-	public void setId(long id) {
-		this.id = id;
-	}
-	public String getId_str() {
-		return id_str;
-	}
-	public void setId_str(String id_str) {
-		this.id_str = id_str;
-	}
-	public long getConnection_id() {
-		return connection_id;
-	}
-	public void setConnection_id(long connection_id) {
-		this.connection_id = connection_id;
-	}
-	public String getConnection_id_str() {
-		return connection_id_str;
-	}
-	public void setConnection_id_str(String connection_id_str) {
-		this.connection_id_str = connection_id_str;
-	}
-	public String getAsset() {
-		return asset;
-	}
-	public void setAsset(String asset) {
-		this.asset = asset;
-	}
 	public Date getTime() {
 		return time;
 	}
@@ -82,6 +53,28 @@ public class Presence {
 	}
 	public void setReason(String reason) {
 		this.reason = reason;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 *   - only id_str is displayed, not id
+	 *   - only connection_id_str is displayed, not connection_id
+	 */
+	public String display() {
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(PRESENCE).append(CRLF);
+		sb.append(RECEIPT_TIME).append(DATE_FORMAT.format(receiptTime)).append(CRLF);
+		sb.append(ID).append(id_str).append(CRLF);
+		sb.append(CONNECTION_ID).append(connection_id_str).append(CRLF);
+		sb.append(ASSET).append(asset).append(CRLF);
+		sb.append(TIME).append(DATE_FORMAT.format(time)).append(CRLF);
+		sb.append(TYPE).append(type).append(CRLF);
+		sb.append(REASON).append(reason).append(CRLF);
+		
+		return sb.toString();
+		
 	}
 
 }
