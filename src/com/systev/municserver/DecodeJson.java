@@ -395,6 +395,16 @@ public class DecodeJson {
     	} catch (ClassCastException e) {
     	}
     	track.setConnectionIdStr(str);
+    	// asset.
+    	str = BAD_STRING;
+    	try {
+    		jsonString = payloadObject.getJsonString("asset");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	track.setAsset(str);
     	// index
     	val = -1;
     	try {
