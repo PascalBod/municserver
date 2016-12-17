@@ -34,9 +34,9 @@ public class Payload {
 
 	protected Date receiptTime;
 	protected long id;
-	protected String id_str;
-	protected long connection_id;
-	protected String connection_id_str;
+	protected String idStr;
+	protected long connectionId;
+	protected String connectionIdStr;
 	protected String asset;
 
 	public Date getReceiptTime() {
@@ -51,23 +51,23 @@ public class Payload {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getId_str() {
-		return id_str;
+	public String getIdStr() {
+		return idStr;
 	}
-	public void setId_str(String id_str) {
-		this.id_str = id_str;
+	public void setIdStr(String id_str) {
+		this.idStr = id_str;
 	}
-	public long getConnection_id() {
-		return connection_id;
+	public long getConnectionId() {
+		return connectionId;
 	}
-	public void setConnection_id(long connection_id) {
-		this.connection_id = connection_id;
+	public void setConnectionId(long connectionId) {
+		this.connectionId = connectionId;
 	}
-	public String getConnection_id_str() {
-		return connection_id_str;
+	public String getConnectionIdStr() {
+		return connectionIdStr;
 	}
-	public void setConnection_id_str(String connection_id_str) {
-		this.connection_id_str = connection_id_str;
+	public void setConnectionIdStr(String connectionIdStr) {
+		this.connectionIdStr = connectionIdStr;
 	}
 	public String getAsset() {
 		return asset;

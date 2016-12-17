@@ -113,16 +113,16 @@ public class Track extends Payload {
 	/**
 	 * 
 	 * @return
-	 *   - only id_str is displayed, not id
-	 *   - only recorded_at_ms is displayed, not recorded_at
+	 *   - only idStr is displayed, not id
+	 *   - only recordedAtMs is displayed, not recordedAt
 	 */
 	public String display() {
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(TRACK).append(CRLF);
 		sb.append(RECEIPT_TIME).append(DATE_FORMAT.format(receiptTime)).append(CRLF);
-		sb.append(ID).append(id_str).append(CRLF);
-		sb.append(CONNECTION_ID).append(connection_id_str).append(CRLF);
+		sb.append(ID).append(idStr).append(CRLF);
+		sb.append(ASSET).append(asset).append(CRLF);
 		sb.append(RECORDED_AT_MS).append(DATE_FORMAT_MS.format(recordedAtMs)).append(CRLF);
 		sb.append(RECEIVED_AT).append(DATE_FORMAT.format(receivedAt)).append(CRLF);
 		sb.append(INDEX).append(index).append(CRLF);

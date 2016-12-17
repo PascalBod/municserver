@@ -39,7 +39,7 @@ public class Server {
 	private final static String LOG_FILE_NAME = "municserver.log";
 	
 	// Server configuration.
-	private final static String VERSION = "V0.4";
+	private final static String VERSION = "V0.5";
 	public final static int PORT = 55040;
 	private final static int MAX_QUEUED_REQUESTS = 10;
 	

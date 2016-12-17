@@ -55,6 +55,9 @@ public class DecodeJson {
 		PRESENCE, MESSAGE, TRACK, ERROR
 	};
 	
+	// For hex to ascii conversion.
+	private static char[] ascii;
+	
 	// Strings defining type of JSON payload.
 	private final static String VAL_PRESENCE = "presence";
 	private final static String VAL_MESSAGE = "message";
@@ -84,6 +87,17 @@ public class DecodeJson {
 		this.logger = logger;
 		objectIndex = 0;
 		logger.fine("DecodeJson - document to parse: " + jsonDocument);
+		// Initialize table for hex to ascii conversion.
+		ascii = new char[256];
+		for (int i = 0; i < 32; i++) {
+			ascii[i] = '.';
+		}
+		for (int i = 32; i < 127; i++) {
+			ascii[i] = (char)i;
+		}
+		for (int i = 127; i < 256; i++) {
+			ascii[i] = '.';
+		}
 		
 	}
 	
@@ -140,7 +154,7 @@ public class DecodeJson {
         	// If not present, a NullPointerException is triggered.
         	String val = metaObject.getString("event");
         	if (val.contentEquals(VAL_MESSAGE)) {
-        		logger.fine("getPayloadType: messqge");
+        		logger.fine("getPayloadType: message");
         		return PayloadType.MESSAGE;
         	}
         	if (val.contentEquals(VAL_PRESENCE)) {
@@ -173,7 +187,9 @@ public class DecodeJson {
 	 * Presence.id_str set to BAD_STRING if can't be read.
 	 * Presence.connection_id_str is set to BAD_STRING if can't be read.
 	 * Presence.time set to January 1, 1970, 00:00:00 if can't be read.
+	 * 
 	 * @return null if presence data can't be read
+	 * 
 	 */
 	public Presence getPresence() {
 		
@@ -220,7 +236,7 @@ public class DecodeJson {
     		}
     	} catch (ClassCastException e) {
     	}
-    	presence.setConnection_id(val);
+    	presence.setConnectionId(val);
     	// id_str.
     	str = BAD_STRING;
     	try {
@@ -230,7 +246,7 @@ public class DecodeJson {
     		}
     	} catch (ClassCastException e) {
     	}
-    	presence.setId_str(str);
+    	presence.setIdStr(str);
     	// connection_id_str
     	str = BAD_STRING;
     	try {
@@ -240,7 +256,7 @@ public class DecodeJson {
     		}
     	} catch (ClassCastException e) {
     	}
-    	presence.setConnection_id_str(str);
+    	presence.setConnectionIdStr(str);
     	// asset.
     	str = BAD_STRING;
     	try {
@@ -302,6 +318,9 @@ public class DecodeJson {
 	 * Track.connection_id_str set to BAD_STRING if can't be read.
 	 * Track.lat and track.lon set to 0.0 if can't be read.
 	 * Track.fields does not contain any element if no field can be read.
+	 * 
+	 * @return null if track data can't be read
+	 * 
 	 */
 	public Track getTrack() {
 		
@@ -355,7 +374,7 @@ public class DecodeJson {
     		}
     	} catch (ClassCastException e) {
     	}
-    	track.setConnection_id(val);
+    	track.setConnectionId(val);
     	// id_str.
     	str = BAD_STRING;
     	try {
@@ -365,7 +384,7 @@ public class DecodeJson {
     		}
     	} catch (ClassCastException e) {
     	}
-    	track.setId_str(str);
+    	track.setIdStr(str);
     	// connection_id_str
     	str = BAD_STRING;
     	try {
@@ -375,7 +394,7 @@ public class DecodeJson {
     		}
     	} catch (ClassCastException e) {
     	}
-    	track.setConnection_id_str(str);
+    	track.setConnectionIdStr(str);
     	// index
     	val = -1;
     	try {
@@ -482,6 +501,199 @@ public class DecodeJson {
 	
 	/**
 	 * 
+	 * @return null if message data can't be read
+	 * 
+	 */
+	public Message getMessage() {
+	
+		JsonObject payloadObject;
+		Message message;
+		long val;
+		JsonNumber jsonNumber;
+		String str;
+		JsonString jsonString;
+		Date date;
+
+		try {
+			// Get message object.
+			payloadObject = jsonObject.getJsonObject("payload");
+        	if (payloadObject == null) {
+        		logger.severe("getMessage: no payload object");
+        		return null;
+        	}
+		} catch (ClassCastException e) {
+			logger.severe("getMessage: " + e.getMessage());
+			return null;
+		}
+    	// At this stage, we have a payload object. Extract data.
+		message = new Message();
+		// Set receipt time.
+		message.setReceiptTime(new Date());
+		// id.
+		val = -1;
+    	try {
+    		jsonNumber = payloadObject.getJsonNumber("id");
+    		if (jsonNumber != null) {
+    			val = jsonNumber.longValue();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	message.setId(val);
+		// parent_id.
+    	val = -1;
+    	try {
+    		jsonNumber = payloadObject.getJsonNumber("parent_id");
+    		if (jsonNumber != null) {
+    			val = jsonNumber.longValue();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	message.setParentId(val);
+    	// connection_id.
+    	val = -1;
+    	try {
+    		jsonNumber = payloadObject.getJsonNumber("connection_id");
+    		if (jsonNumber != null) {
+    			val = jsonNumber.longValue();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	message.setConnectionId(val);
+    	// id_str.
+    	str = BAD_STRING;
+    	try {
+    		jsonString = payloadObject.getJsonString("id_str");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	message.setIdStr(str);
+    	// parent_id_str.
+    	str = BAD_STRING;
+    	try {
+    		jsonString = payloadObject.getJsonString("parent_id_str");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	message.setParentIdStr(str);
+    	// connection_id_str
+    	str = BAD_STRING;
+    	try {
+    		jsonString = payloadObject.getJsonString("connection_id_str");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	message.setConnectionIdStr(str);
+    	// type.
+    	str = BAD_STRING;
+    	try {
+    		jsonString = payloadObject.getJsonString("type");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	message.setType(str);
+    	// channel.
+    	str = BAD_STRING;
+    	try {
+    		jsonString = payloadObject.getJsonString("channel");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	message.setChannel(str);
+    	// sender.
+    	str = BAD_STRING;
+    	try {
+    		jsonString = payloadObject.getJsonString("sender");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	message.setSender(str);
+    	// recipient.
+    	str = BAD_STRING;
+    	try {
+    		jsonString = payloadObject.getJsonString("recipient");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	message.setRecipient(str);
+    	// asset.
+    	str = BAD_STRING;
+    	try {
+    		jsonString = payloadObject.getJsonString("asset");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	message.setAsset(str);
+    	// recorded_at.
+    	str = BAD_STRING;
+    	try {
+    		jsonString = payloadObject.getJsonString("recorded_at");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	date = new Date(0);
+    	if (!str.contentEquals(BAD_STRING)) {
+    		try {
+    			date = Payload.DATE_FORMAT.parse(str);
+    		} catch (ParseException e) {
+    		}
+    	}
+    	message.setRecordedAt(date);
+    	// received_at.
+    	try {
+    		jsonString = payloadObject.getJsonString("received_at");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	date = new Date(0);
+    	if (!str.contentEquals(BAD_STRING)) {
+    		try {
+    			date = Payload.DATE_FORMAT.parse(str);
+    		} catch (ParseException e) {
+    		}
+    	}
+    	message.setReceivedAt(date);
+   	    // payload.
+    	str = BAD_STRING;
+    	try {
+    		jsonString = payloadObject.getJsonString("b64_payload");
+    		if (jsonString != null) {
+    			str = jsonString.getString();
+    		}
+    		try {
+    			byte[] decodedData = DatatypeConverter.parseBase64Binary(str);
+    			str = DatatypeConverter.printHexBinary(decodedData) + " - " + getDisplayableBytes(decodedData);
+    		} catch (IllegalArgumentException e) {
+    		}
+    	} catch (ClassCastException e) {
+    	}
+    	message.setPayload(str);
+
+		return message;
+		
+	}
+	
+	/**
+	 * 
 	 * @param value
 	 * @return null if value can't be decoded otherwise base64-decoded value as an hex string
 	 */
@@ -505,11 +717,28 @@ public class DecodeJson {
 		}
 		try {
 			byte[] decodedData = DatatypeConverter.parseBase64Binary(str);
-			return DatatypeConverter.printHexBinary(decodedData);
+			return DatatypeConverter.printHexBinary(decodedData) + " - " + getDisplayableBytes(decodedData);
 		} catch (IllegalArgumentException e) {
 		}
 		
 		return null;
+		
+	}
+	
+	/**
+	 * 
+	 * @param binaryData
+	 * @return a string with a dot for non displayable bytes and ASCII character for other bytes
+	 */
+	private String getDisplayableBytes(byte[] binaryData) {
+		
+		StringBuilder sb = new StringBuilder();
+		int l = binaryData.length;
+		for (int i = 0; i < l; i++) {
+			sb.append(ascii[(int)(binaryData[i] & 0xFF)]);
+		}
+		
+		return sb.toString();
 		
 	}
 	

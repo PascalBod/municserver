@@ -100,6 +100,7 @@ public class PostHandler implements HttpHandler {
         DecodeJson.PayloadType payloadType;
         Presence presence;
         Track track;
+        Message message;
         while (true) {
         	objectAvail = decodeJson.getNextArrayObject();
         	if (!objectAvail) {
@@ -118,7 +119,13 @@ public class PostHandler implements HttpHandler {
             	logger.fine(presence.display());
             	break;
             case MESSAGE:
-            	logger.fine("message data not decoded yet");
+            	message = decodeJson.getMessage();
+            	if (message == null) {
+            		logger.severe("**** error **** can't read message data");;
+            		break;
+            	}
+            	// At this stage, message object is available.
+            	logger.fine(message.display());
             	break;
             case TRACK:
             	track = decodeJson.getTrack();

@@ -155,9 +155,9 @@ public class DecodeJsonTest {
 		Presence presence = decodeJson.getPresence();
 		assertNotNull("bad presence", presence);
 		assertEquals("bad presence", presence.getId(), 911270996919452058L);
-		assertEquals("bad presence", presence.getConnection_id(), 911270996911063452L);
-		assertEquals("bad presence", presence.getId_str(), "911270996919452058");
-		assertEquals("bad presence", presence.getConnection_id_str(), "911270996911063452");
+		assertEquals("bad presence", presence.getConnectionId(), 911270996911063452L);
+		assertEquals("bad presence", presence.getIdStr(), "911270996919452058");
+		assertEquals("bad presence", presence.getConnectionIdStr(), "911270996911063452");
 		assertEquals("bad presence", presence.getAsset(), "356156060353505");
 		String dateStr = "Sat Nov 19 15:05:36 CET 2016";
 		assertEquals("bad presence", presence.getTime().toString(), dateStr);

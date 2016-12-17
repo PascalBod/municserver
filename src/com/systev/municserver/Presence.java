@@ -58,16 +58,16 @@ public class Presence extends Payload {
 	/**
 	 * 
 	 * @return
-	 *   - only id_str is displayed, not id
-	 *   - only connection_id_str is displayed, not connection_id
+	 *   - only idStr is displayed, not id
+	 *   - only connectionId_str is displayed, not connectionId
 	 */
 	public String display() {
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(PRESENCE).append(CRLF);
 		sb.append(RECEIPT_TIME).append(DATE_FORMAT.format(receiptTime)).append(CRLF);
-		sb.append(ID).append(id_str).append(CRLF);
-		sb.append(CONNECTION_ID).append(connection_id_str).append(CRLF);
+		sb.append(ID).append(idStr).append(CRLF);
+		sb.append(CONNECTION_ID).append(connectionIdStr).append(CRLF);
 		sb.append(ASSET).append(asset).append(CRLF);
 		sb.append(TIME).append(DATE_FORMAT.format(time)).append(CRLF);
 		sb.append(TYPE).append(type).append(CRLF);

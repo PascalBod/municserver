@@ -236,4 +236,16 @@ public class ServerTest {
 		
 	}
 
+	/**
+	 * Presence and message objects.
+	 */
+	@Test
+	public void testSendJson05() {
+		
+		String jsonDocument = getJsonDocument("jsonDocument05.txt");
+		assertNotEquals("can't read jsonDocument05", jsonDocument, "");
+		sendJsonDocument(jsonDocument);
+		
+	}
+
 }
