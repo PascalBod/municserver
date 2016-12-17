@@ -1,6 +1,6 @@
 # municserver
 
-This repository contains a server that can be used as a target for Mobile Device's CloudConnect webhook, for Munic device.
+This repository contains a server that can be used as a target for Mobile Device's CloudConnect webhook, for a [Munic device](https://www.munic.io/).
 
 It shows how to decode JSON documents sent by CloudConnect platform.
 
